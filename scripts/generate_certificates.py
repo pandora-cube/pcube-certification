@@ -16,9 +16,12 @@ from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parents[1]
 VERIFY_DIR = ROOT / "verify"
-TEMPLATE_PATH = VERIFY_DIR / "template.html"
-REQUIRED_STUDY_FIELDS = ("name",)
-REQUIRED_RECIPIENT_FIELDS = ("name", "badge_id", "issue_date")
+TEMPLATE_PATH = ROOT / "scripts/templates/certificate.html"
+PUBLIC_ASSETS = Path("verify/assets")
+FONT_ASSET = PUBLIC_ASSETS / "fonts/PretendardVariable.ttf"
+STAMP_ASSET = PUBLIC_ASSETS / "pcube-symbol.png"
+CERTIFICATION_LOGO_ASSET = PUBLIC_ASSETS / "pcube-certification.png"
+REQUIRED_STUDY_FIELDS = ("id", "name", "issue_date")
 STUDY_BADGE_FILENAMES = ("badge.svg", "badge.png")
 SAFE_PATH_COMPONENT = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 
@@ -78,6 +81,13 @@ def generate_study(data_path: Path, template: str) -> int:
 
     study_dir = data_path.parent
     safe_component(study_dir.name, "스터디 디렉터리")
+    study_id = safe_component(study["id"], "study.id")
+    try:
+        if date.fromisoformat(study["issue_date"]).isoformat() != study["issue_date"]:
+            raise ValueError
+    except ValueError as error:
+        raise ValueError("study.issue_date: 날짜는 YYYY-MM-DD 형식이어야 합니다.") from error
+
     badge_files = [study_dir / name for name in STUDY_BADGE_FILENAMES if (study_dir / name).is_file()]
     if recipients and len(badge_files) != 1:
         expected = " 또는 ".join(STUDY_BADGE_FILENAMES)
@@ -86,37 +96,31 @@ def generate_study(data_path: Path, template: str) -> int:
             f"현재 발견: {len(badge_files)}개"
         )
     badge_asset = badge_files[0] if badge_files else None
-    issued_ids: set[str] = set()
+    badge_image = relative_asset(badge_asset.relative_to(ROOT).as_posix(), study_dir) if badge_asset else ""
+    background = study.get("background_image", "")
+    background_image = f"url({relative_asset(background, study_dir)})" if background else "none"
+    asset_urls = {
+        "BADGE_IMAGE_URL": badge_image,
+        "BACKGROUND_IMAGE_URL": background_image,
+        "FONT_URL": relative_asset(FONT_ASSET.as_posix(), study_dir),
+        "STAMP_IMAGE_URL": relative_asset(STAMP_ASSET.as_posix(), study_dir),
+        "CERTIFICATION_LOGO_URL": relative_asset(CERTIFICATION_LOGO_ASSET.as_posix(), study_dir),
+    }
     for index, recipient in enumerate(recipients, start=1):
         context = f"recipients[{index - 1}]"
-        if not isinstance(recipient, dict):
-            raise ValueError(f"{context}: 객체여야 합니다.")
-        require_text_fields(recipient, REQUIRED_RECIPIENT_FIELDS, context)
-        badge_id = safe_component(recipient["badge_id"], f"{context}.badge_id")
-        try:
-            if date.fromisoformat(recipient["issue_date"]).isoformat() != recipient["issue_date"]:
-                raise ValueError
-        except ValueError as error:
-            raise ValueError(f"{context}.issue_date: 날짜는 YYYY-MM-DD 형식이어야 합니다.") from error
-        if badge_id in issued_ids:
-            raise ValueError(f"{context}: 발급번호가 중복되었습니다: {badge_id}")
-        issued_ids.add(badge_id)
+        if not isinstance(recipient, str) or not recipient.strip():
+            raise ValueError(f"{context}: 비어 있지 않은 이름 문자열이어야 합니다.")
+        badge_id = f"{study_id}-{index:03d}"
 
-        page_dir = study_dir / badge_id
-        badge_image = relative_asset(badge_asset.relative_to(ROOT).as_posix(), page_dir)
-        background = study.get("background_image", "")
-        background_image = f"url({relative_asset(background, page_dir)})" if background else "none"
+        output_path = study_dir / f"{badge_id}.html"
         values = {
-            "EARNER_NAME": recipient["name"],
+            "EARNER_NAME": recipient,
             "STUDY_NAME": study["name"],
             "BADGE_ID": badge_id,
-            "ISSUE_DATE": recipient["issue_date"],
-            "BADGE_IMAGE_URL": badge_image,
-            "BACKGROUND_IMAGE_URL": background_image,
-            "FONT_URL": relative_asset("verify/fonts/PretendardVariable.ttf", page_dir),
+            "ISSUE_DATE": study["issue_date"],
+            **asset_urls,
         }
-        page_dir.mkdir(parents=True, exist_ok=True)
-        (page_dir / "index.html").write_text(render(template, values), encoding="utf-8")
+        output_path.write_text(render(template, values), encoding="utf-8")
     return len(recipients)
 
 

@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="Pandoracube Team Vent Certificate Generator">
-    <title>{{EARNER_NAME}}님의 {{STUDY_NAME}} 수료 인증</title>
-    <meta property="og:title" content="{{EARNER_NAME}}님의 {{STUDY_NAME}} 수료 인증">
-    <meta property="og:description" content="Pandoracube · Team Vent 공식 수료 인증입니다. 발급번호: {{BADGE_ID}}">
-    <meta property="og:image" content="{{BADGE_IMAGE_URL}}">
+    <title>홍기태님의 25-26 실시간 멀티플레이 스터디 수료 인증</title>
+    <meta property="og:title" content="홍기태님의 25-26 실시간 멀티플레이 스터디 수료 인증">
+    <meta property="og:description" content="Pandoracube · Team Vent 공식 수료 인증입니다. 발급번호: RMP-2026-008">
+    <meta property="og:image" content="badge.svg">
     <meta property="og:type" content="website">
     <style>
         @font-face {
             font-family: "Pretendard Variable";
-            src: url("{{FONT_URL}}") format("truetype");
+            src: url("../assets/fonts/PretendardVariable.ttf") format("truetype");
             font-style: normal;
             font-weight: 45 920;
             font-display: swap;
@@ -29,15 +29,29 @@
 
         * { box-sizing: border-box; }
         body {
+            position: relative;
+            isolation: isolate;
             min-height: 100vh;
             margin: 0;
             display: grid;
             place-items: center;
             padding: 24px 16px;
             background-color: #faf8f7;
-            background-image: {{BACKGROUND_IMAGE_URL}};
+            background-image: none;
             background-size: cover;
             background-position: center;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background: url("../assets/pcube-certification.png") center / min(88vw, 860px) auto no-repeat;
+            opacity: .055;
         }
 
         main {
@@ -92,6 +106,11 @@
             word-break: keep-all;
         }
 
+        h1, .earner, dl, dl * {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
         .earner { margin: 7px 0 28px; color: #716968; font-size: 15px; font-weight: 400; }
         dl { margin: 0; border-top: 1px solid #eee7e5; text-align: left; }
         dl div { display: grid; grid-template-columns: 90px 1fr; gap: 12px; padding: 14px 3px; border-bottom: 1px solid #eee7e5; font-size: 14px; }
@@ -106,7 +125,8 @@
             letter-spacing: .09em;
         }
 
-        .stamp { position: absolute; right: 16px; bottom: 14px; width: 34px; height: 42px; object-fit: contain; opacity: .62; }
+        img { -webkit-user-drag: none; user-select: none; }
+        .stamp { position: absolute; right: 16px; bottom: 14px; width: 34px; height: 42px; object-fit: contain; opacity: 1; }
 
         @media (max-width: 360px) {
             main { padding-inline: 20px; }
@@ -118,16 +138,16 @@
     <main>
         <p class="brand">PANDORACUBE · TEAM VENT</p>
         <p class="status">인증 완료</p>
-        <img class="badge" src="{{BADGE_IMAGE_URL}}" alt="Pandoracube 스터디 인증 배지">
-        <h1>{{STUDY_NAME}}</h1>
-        <p class="earner">{{EARNER_NAME}} 수료자</p>
+        <img class="badge" src="badge.svg" alt="Pandoracube 스터디 인증 배지" draggable="false">
+        <h1>25-26 실시간 멀티플레이 스터디</h1>
+        <p class="earner">홍기태 수료자</p>
         <dl>
-            <div><dt>발급 번호</dt><dd>{{BADGE_ID}}</dd></div>
-            <div><dt>발급 일자</dt><dd>{{ISSUE_DATE}}</dd></div>
+            <div><dt>발급 번호</dt><dd>RMP-2026-008</dd></div>
+            <div><dt>발급 일자</dt><dd>2026-03-03</dd></div>
             <div><dt>인증 기관</dt><dd>Pandoracube · Team Vent</dd></div>
         </dl>
         <footer>VERIFIED BY PANDORACUBE · TEAM VENT</footer>
-        <img class="stamp" src="../../pcube-symbol.png" alt="Pandoracube 인증 마크">
+        <img class="stamp" src="../assets/pcube-symbol.png" alt="Pandoracube 인증 마크" draggable="false">
     </main>
 </body>
 </html>
