@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Pandoracube Team Vent Certificate Generator">
+    <title>{{EARNER_NAME}}님의 {{STUDY_NAME}} 수료 인증</title>
+    <meta property="og:title" content="{{EARNER_NAME}}님의 {{STUDY_NAME}} 수료 인증">
+    <meta property="og:description" content="Pandoracube · Team Vent 공식 수료 인증입니다. 발급번호: {{BADGE_ID}}">
+    <meta property="og:image" content="{{BADGE_IMAGE_URL}}">
+    <meta property="og:type" content="website">
+    <style>
+        @font-face {
+            font-family: "Pretendard Variable";
+            src: url("{{FONT_URL}}") format("truetype");
+            font-style: normal;
+            font-weight: 45 920;
+            font-display: swap;
+        }
+
+        :root {
+            color-scheme: light;
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+            color: #1b1919;
+            background: #faf8f7;
+            font-synthesis: none;
+            text-rendering: optimizeLegibility;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: grid;
+            place-items: center;
+            padding: 24px 16px;
+            background-color: #faf8f7;
+            background-image: {{BACKGROUND_IMAGE_URL}};
+            background-size: cover;
+            background-position: center;
+        }
+
+        main {
+            position: relative;
+            width: min(100%, 440px);
+            overflow: hidden;
+            padding: 34px 30px 28px;
+            border: 1px solid #eee7e5;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, .98);
+            box-shadow: 0 18px 48px rgba(45, 30, 30, .09);
+            text-align: center;
+        }
+
+        .brand {
+            margin: 0 0 24px;
+            color: #c91d27;
+            font-size: 11px;
+            font-weight: 750;
+            letter-spacing: .13em;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin: 0 0 22px;
+            padding: 7px 13px;
+            border-radius: 99px;
+            background: #fff0ef;
+            color: #b51e27;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .status::before { content: "✓"; font-size: 15px; }
+
+        .badge {
+            display: block;
+            width: min(100%, 245px);
+            height: auto;
+            margin: 0 auto 25px;
+            object-fit: contain;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.5;
+            letter-spacing: -.035em;
+            word-break: keep-all;
+        }
+
+        .earner { margin: 7px 0 28px; color: #716968; font-size: 15px; font-weight: 400; }
+        dl { margin: 0; border-top: 1px solid #eee7e5; text-align: left; }
+        dl div { display: grid; grid-template-columns: 90px 1fr; gap: 12px; padding: 14px 3px; border-bottom: 1px solid #eee7e5; font-size: 14px; }
+        dt { color: #817775; font-weight: 400; }
+        dd { margin: 0; color: #211d1c; font-weight: 600; overflow-wrap: anywhere; }
+
+        footer {
+            margin-top: 25px;
+            color: #8b817f;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .09em;
+        }
+
+        .stamp { position: absolute; right: 16px; bottom: 14px; width: 34px; height: 42px; object-fit: contain; opacity: .62; }
+
+        @media (max-width: 360px) {
+            main { padding-inline: 20px; }
+            dl div { grid-template-columns: 76px 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <p class="brand">PANDORACUBE · TEAM VENT</p>
+        <p class="status">인증 완료</p>
+        <img class="badge" src="{{BADGE_IMAGE_URL}}" alt="Pandoracube 스터디 인증 배지">
+        <h1>{{STUDY_NAME}}</h1>
+        <p class="earner">{{EARNER_NAME}} 수료자</p>
+        <dl>
+            <div><dt>발급 번호</dt><dd>{{BADGE_ID}}</dd></div>
+            <div><dt>발급 일자</dt><dd>{{ISSUE_DATE}}</dd></div>
+            <div><dt>인증 기관</dt><dd>Pandoracube · Team Vent</dd></div>
+        </dl>
+        <footer>VERIFIED BY PANDORACUBE · TEAM VENT</footer>
+        <img class="stamp" src="../../pcube-symbol.png" alt="Pandoracube 인증 마크">
+    </main>
+</body>
+</html>
