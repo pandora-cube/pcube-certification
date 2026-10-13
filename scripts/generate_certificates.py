@@ -124,6 +124,33 @@ def generate_study(data_path: Path, template: str) -> int:
     return len(recipients)
 
 
+def generate_redirects() -> int:
+    """Create extensionless Cloudflare Pages routes for generated certificates."""
+    rules = []
+    for data_path in sorted(VERIFY_DIR.glob("*/data.json")):
+        data = load_data(data_path)
+        study = data.get("study")
+        recipients = data.get("recipients")
+        if not isinstance(study, dict) or not isinstance(recipients, list):
+            raise ValueError(f"{data_path.relative_to(ROOT)}: 'study' 객체와 'recipients' 배열이 필요합니다.")
+        require_text_fields(study, ("id",), "study")
+        study_slug = safe_component(data_path.parent.name, "스터디 디렉터리")
+        study_id = safe_component(study["id"], "study.id")
+        for index, recipient in enumerate(recipients, start=1):
+            if not isinstance(recipient, str) or not recipient.strip():
+                raise ValueError(f"{data_path.relative_to(ROOT)}: recipients[{index - 1}]는 이름 문자열이어야 합니다.")
+            badge_id = f"{study_id}-{index:03d}"
+            page = data_path.parent / f"{badge_id}.html"
+            if page.is_file():
+                source = f"/{study_slug}/{badge_id}"
+                destination = f"/{study_slug}/{badge_id}.html"
+                rules.append(f"{source} {destination} 200")
+
+    redirects_path = VERIFY_DIR / "_redirects"
+    redirects_path.write_text("\n".join(rules) + ("\n" if rules else ""), encoding="utf-8")
+    return len(rules)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="스터디 수료 인증 HTML 페이지를 생성합니다.")
     parser.add_argument("--study", help="verify 아래 스터디 디렉터리 이름 (기본값: 모든 data.json 처리)")
@@ -148,10 +175,12 @@ def main() -> int:
             count = generate_study(data_path, template)
             print(f"{data_path.parent.relative_to(ROOT)}: {count}개 페이지 생성")
             total += count
+        route_count = generate_redirects()
     except (OSError, ValueError) as error:
         print(f"오류: {error}", file=sys.stderr)
         return 1
     print(f"완료: 총 {total}개 페이지")
+    print(f"Cloudflare Pages 경로 규칙: {route_count}개")
     return 0
 
 
