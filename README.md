@@ -7,6 +7,7 @@ Pandoracube와 Team Vent가 발급하는 스터디 수료 인증 페이지 모�
 ## 인증 스터디
 
 - [25-26 실시간 멀티플레이 스터디](./verify/realtime-multiplay-2026-01/info.md)
+- [26 강화학습 스터디](./verify/realtime-multiplay-2026-01/info.md)
 
 ## 소유권
 
