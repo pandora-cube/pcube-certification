@@ -39,6 +39,10 @@ dist/
 env/
 venv/
 
+# JavaScript package and Cloudflare local state
+node_modules/
+.wrangler/
+
 # Unit test / coverage reports
 htmlcov/
 .tox/
@@ -63,8 +67,7 @@ htmlcov/
 # Thumbnails
 ._*
 
-# Custom folder icons
-Icon
+
 
 # Volume root files
 .DocumentRevisions-V100
@@ -168,6 +171,12 @@ x86/
 ### Xcode
 # Xcode user settings
 xcuserdata/
+
+# Generated certification pages (source: data.json, badge, optional template.html)
+verify/index.html
+verify/*/*.html
+!verify/*/template.html
+verify/*/*/index.html
 
 # Xcode build artifacts
 build/

@@ -1,29 +1,81 @@
 # 인증 사이트 운영
 
-## 수료 데이터 작성
+## 스터디 데이터
 
-수료자 정보는 각 스터디 디렉터리의 `data.json`에서 관리합니다. `study` 객체에는 스터디 ID(`id`), 이름(`name`), 공통 발급일(`issue_date`)을 입력하고, `recipients` 배열에는 수료자 이름만 입력합니다. 발급일은 `YYYY-MM-DD` 형식입니다. 배열 순서대로 `<study.id>-001`부터 발급번호가 부여되므로 기존 순서를 유지하고 새 수료자는 배열 끝에 추가합니다. 수료자가 없는 스터디는 `recipients`를 빈 배열로 둡니다.
+스터디마다 `verify/<study>/` 폴더를 만들고 다음 파일을 둡니다.
 
-수료자가 등록된 스터디 디렉터리에는 `badge.svg` 또는 `badge.png` 중 하나를 둡니다. 생성기는 둘 중 정확히 하나가 있는지 확인합니다. Pretendard 가변 폰트와 서비스 로고는 `verify/assets/`에서 제공합니다. 폰트 라이선스는 `verify/assets/fonts/OFL.txt`에 있습니다. 인증 HTML 템플릿은 `scripts/templates/`에서 관리합니다.
-
-## 인증 페이지 생성
-
-저장소 루트에서 모든 스터디 페이지를 생성합니다.
-
-```sh
-python3 scripts/generate_certificates.py
+```text
+verify/<study>/
+├─ data.json
+├─ badge.svg 또는 badge.png
+└─ template.html (선택)
 ```
 
-특정 스터디만 생성할 수 있습니다.
+`data.json` 예시는 다음과 같습니다.
+
+```json
+{
+  "study": {
+    "id": "RMP-2026",
+    "name": "25-26 실시간 멀티플레이 스터디",
+    "issue_date": "2026-03-03"
+  },
+  "recipients": ["홍길동"],
+  "operators": ["김운영"]
+}
+```
+
+- `recipients`: 수료자 명단이며 발급번호는 `<study.id>-001` 형식입니다.
+- `operators`: 운영자 명단이며 발급번호는 `<study.id>-OP-001` 형식입니다. 생략하면 빈 배열로 처리됩니다.
+- 명단 순서가 발급번호를 결정하므로 기존 인원 순서는 유지하고 새 인원은 끝에 추가합니다.
+- 인증 대상자가 있으면 `badge.svg`와 `badge.png` 중 정확히 하나가 필요합니다.
+- `issue_date`는 `YYYY-MM-DD` 형식입니다.
+
+`template.html`이 있으면 해당 스터디에만 자동 적용됩니다. 없으면 LinkedIn 등록, iframe 임베드, Open Graph, 단일 HTML 이미지 내장을 지원하는 기본 템플릿을 사용합니다. 자세한 규격은 [커스텀 인증서 템플릿](custom-template.md)을 참고하세요.
+
+## 공개 URL 설정
+
+`certification.config.json`의 `public_base_url`에 경로 없는 실제 HTTPS 도메인을 입력합니다.
+
+```json
+{
+  "public_base_url": "https://certificate.p-cube.kr"
+}
+```
+
+이 값은 LinkedIn 자격증 URL, iframe 주소, canonical URL과 Open Graph 메타데이터에 사용됩니다.
+
+## 로컬 생성
+
+생성기는 스터디 하나를 명시적으로 처리합니다.
 
 ```sh
 python3 scripts/generate_certificates.py --study realtime-multiplay-2026-01
 ```
 
-인증 페이지는 `verify/<스터디>/<발급번호>.html`에 생성됩니다. 예를 들어 `RMP-2026-001` 페이지는 `verify/realtime-multiplay-2026-01/RMP-2026-001.html`입니다. 생성된 HTML과 `verify/_redirects`를 함께 커밋해 배포합니다. 인증을 철회할 때는 해당 HTML 파일도 저장소에서 삭제합니다.
+공식 인증서는 `verify/<study>/<발급번호>.html`, 확장자 없는 기존 URL을 위한 이동 페이지는 `verify/<study>/<발급번호>/index.html`에 생성됩니다. 사이트 랜딩 페이지도 `verify/index.html`에 생성됩니다. 이 산출물은 Git에서 추적하지 않으며 `data.json`, 배지, 선택적 `template.html`이 원본입니다.
 
-## Cloudflare Pages
+## LinkedIn 및 임베드
 
-Pages 프로젝트의 루트 디렉터리는 저장소 루트로, 빌드 출력 디렉터리는 `verify`로 설정합니다. 별도 빌드 명령은 사용하지 않습니다. 생성된 `verify/_redirects`는 등록된 인증 URL `/<스터디>/<발급번호>`를 대응하는 `.html` 파일에 내부 연결합니다. 규칙은 데이터에 등록되어 있고 HTML 파일도 존재하는 인증에 대해서만 생성됩니다. 따라서 수료 데이터를 수정한 후 페이지를 다시 생성하고 변경된 HTML과 `_redirects`를 커밋해야 합니다.
+기본 템플릿의 **LinkedIn에 등록** 버튼은 스터디명, 인증 종류, 발급 연월, 발급번호와 공식 URL을 LinkedIn 등록 화면에 전달합니다. 발급 기관은 사용자가 `Pandoracube · Team Vent`로 선택합니다.
 
-서브도메인은 Cloudflare Pages 프로젝트의 **Custom domains**에서 연결합니다. 사이트 최상위 경로(`/`)에는 페이지를 제공하지 않습니다. 스터디 소개 페이지가 필요해지면 해당 스터디 경로에 페이지를 추가합니다.
+**임베드 코드 복사** 버튼은 같은 인증 URL에 `?embed=1`을 붙인 iframe 코드를 복사합니다. 배포 환경에서 `X-Frame-Options` 또는 Content Security Policy의 `frame-ancestors`로 외부 표시를 차단하지 않아야 합니다.
+
+## Cloudflare Pages 배포
+
+Cloudflare에서 Direct Upload Pages 프로젝트를 한 번 생성합니다.
+
+- 프로젝트 이름: `pcube-certification`
+- Production branch: `main`
+- 배포 디렉터리: `verify/`
+
+GitHub 저장소의 Actions secret에 다음 값을 등록합니다.
+
+| Secret | 값 |
+| --- | --- |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare 계정 ID |
+| `CLOUDFLARE_API_TOKEN` | `Account / Cloudflare Pages / Edit` 권한 토큰 |
+
+`main`에서 데이터, 배지, 커스텀 템플릿, 생성기 또는 공통 자산이 바뀌면 액션이 fresh checkout의 모든 `data.json`을 스터디별로 생성한 뒤 `verify/` 전체를 배포합니다. 새 폴더뿐 아니라 기존 스터디의 원본 변경도 자동 반영됩니다. 수동 실행은 Actions의 **Run workflow**를 사용합니다.
+
+최초 배포는 `<project>.pages.dev`에서 확인한 뒤 Pages 프로젝트의 **Custom domains**에 `certificate.p-cube.kr`을 추가합니다. GitHub Pages나 Page Rule은 필요하지 않습니다.

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Pandoracube Team Vent Certificate Generator">
+    <title>Pandoracube · Team Vent 인증 서비스</title>
+    <meta name="description" content="Pandoracube와 Team Vent가 발급한 스터디 수료 인증을 확인하는 공식 서비스입니다.">
+    <meta property="og:title" content="Pandoracube · Team Vent 인증 서비스">
+    <meta property="og:description" content="Pandoracube와 Team Vent의 공식 스터디 수료 인증 서비스입니다.">
+    <meta property="og:image" content="{{OG_IMAGE_URL}}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{CANONICAL_URL}}">
+    <link rel="canonical" href="{{CANONICAL_URL}}">
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+            color: #211d1c;
+            background: #faf8f7;
+            font-synthesis: none;
+            text-rendering: optimizeLegibility;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: grid;
+            place-items: center;
+            padding: 28px 18px;
+            background:
+                radial-gradient(circle at 50% 0, rgba(201, 29, 39, .09), transparent 38%),
+                #faf8f7;
+        }
+
+        main {
+            width: min(100%, 620px);
+            padding: 48px 42px 44px;
+            border: 1px solid #eee7e5;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, .96);
+            box-shadow: 0 20px 56px rgba(45, 30, 30, .09);
+            text-align: center;
+        }
+
+        img {
+            display: block;
+            width: min(100%, 360px);
+            height: auto;
+            margin: 0 auto 34px;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .eyebrow {
+            margin: 0 0 14px;
+            color: #c91d27;
+            font-size: 12px;
+            font-weight: 750;
+            letter-spacing: .14em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(25px, 6vw, 34px);
+            line-height: 1.35;
+            letter-spacing: -.04em;
+            word-break: keep-all;
+        }
+
+        .description {
+            max-width: 470px;
+            margin: 20px auto 0;
+            color: #716968;
+            font-size: 15px;
+            line-height: 1.8;
+            word-break: keep-all;
+        }
+
+        .notice {
+            margin: 32px 0 0;
+            padding-top: 24px;
+            border-top: 1px solid #eee7e5;
+            color: #8b817f;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 480px) {
+            main { padding: 36px 24px 32px; }
+            img { margin-bottom: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <img src="{{CERTIFICATION_LOGO_URL}}" alt="Pandoracube Certification" draggable="false">
+        <p class="eyebrow">OFFICIAL CERTIFICATION</p>
+        <h1>Pandoracube · Team Vent<br>인증 서비스</h1>
+        <p class="description">판도라큐브와 Team Vent가 운영한 스터디의 수료 사실과 발급 정보를 확인하는 공식 인증 서비스입니다.</p>
+        <p class="notice">개별 인증서는 발급받은 고유 주소에서 확인할 수 있습니다.<br>개인정보 보호를 위해 인증서 목록은 공개하지 않습니다.</p>
+    </main>
+</body>
+</html>
