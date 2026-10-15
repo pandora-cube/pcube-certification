@@ -60,22 +60,3 @@ python3 scripts/generate_certificates.py --study realtime-multiplay-2026-01
 기본 템플릿의 **LinkedIn에 등록** 버튼은 스터디명, 인증 종류, 발급 연월, 발급번호와 공식 URL을 LinkedIn 등록 화면에 전달합니다. 발급 기관은 사용자가 `Pandoracube · Team Vent`로 선택합니다.
 
 **임베드 코드 복사** 버튼은 같은 인증 URL에 `?embed=1`을 붙인 iframe 코드를 복사합니다. 배포 환경에서 `X-Frame-Options` 또는 Content Security Policy의 `frame-ancestors`로 외부 표시를 차단하지 않아야 합니다.
-
-## Cloudflare Pages 배포
-
-Cloudflare에서 Direct Upload Pages 프로젝트를 한 번 생성합니다.
-
-- 프로젝트 이름: `pcube-certification`
-- Production branch: `main`
-- 배포 디렉터리: `verify/`
-
-GitHub 저장소의 Actions secret에 다음 값을 등록합니다.
-
-| Secret | 값 |
-| --- | --- |
-| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare 계정 ID |
-| `CLOUDFLARE_API_TOKEN` | `Account / Cloudflare Pages / Edit` 권한 토큰 |
-
-`main`에서 데이터, 배지, 커스텀 템플릿, 생성기 또는 공통 자산이 바뀌면 액션이 fresh checkout의 모든 `data.json`을 스터디별로 생성한 뒤 `verify/` 전체를 배포합니다. 새 폴더뿐 아니라 기존 스터디의 원본 변경도 자동 반영됩니다. 수동 실행은 Actions의 **Run workflow**를 사용합니다.
-
-최초 배포는 `<project>.pages.dev`에서 확인한 뒤 Pages 프로젝트의 **Custom domains**에 `certificate.p-cube.kr`을 추가합니다. GitHub Pages나 Page Rule은 필요하지 않습니다.
